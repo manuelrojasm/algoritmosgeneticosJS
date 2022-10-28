@@ -1,41 +1,28 @@
-import React from 'react'
+import React, { Component } from "react";
+import Map from "./map";
 
-export default function Dashboard() {
+export default class dashboard extends Component {
+  render() {
     return (
-        <div class="row">
-            <div class="col s12">    <h1>
-                Laboratorio KERUB
-            </h1></div>
-            <div class="col s6">  <div class="row">
-                <div class="col s12 m6">
-                    <div class="card blue-grey darken-1">
-                        <div class="card-content white-text">
-                            <span class="card-title">Card Title</span>
-                            <p>I am a very simple card. I am good at containing small bits of information.
-                                I am convenient because I require little markup to use effectively.</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="#">This is a link</a>
-                            <a href="#">This is a link</a>
-                        </div>
-                    </div>
-                </div>
-            </div></div>
-            <div class="col s6">  <div class="row">
-                <div class="col s12 m6">
-                    <div class="card blue-grey darken-1">
-                        <div class="card-content white-text">
-                            <span class="card-title">Card Title</span>
-                            <p>I am a very simple card. I am good at containing small bits of information.
-                                I am convenient because I require little markup to use effectively.</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="#">This is a link</a>
-                            <a href="#">This is a link</a>
-                        </div>
-                    </div>
-                </div>
-            </div></div>
+      <div className="row">
+        <div className="col-12">
+          <h1>Laboratorio KERUB</h1>
         </div>
-    )
+        <div className="col-8">
+          <div className="row">
+            <div className="col-12">
+              <Map />
+            </div>
+          </div>
+        </div>
+        <div className="col-4">
+          <div className="row">
+            <div className="col-12">
+                <button>inciar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
