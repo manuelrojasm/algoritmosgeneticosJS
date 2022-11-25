@@ -5,11 +5,22 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #00122b;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+@font-face {
+  font-family: 'Mokoto';
+  src: local('Mokoto') url('./font/mokoto-font/Mokoto Glitch Mark 2.ttf') format('Mokoto');
+}
+
+.tittle{
+  color: aqua;
+  font-family: cursive;
 }
 
 .map-row {
@@ -26,6 +37,7 @@ code {
   height: 30px;
   color: gray;
   border: 1px black solid;
+  background: white;
   font-size: 10px;
   text-align: center;
 }

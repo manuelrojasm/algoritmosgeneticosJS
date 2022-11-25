@@ -5,72 +5,106 @@ export default class map extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      area: [10, 8],
-      place: [
-        "D2",
-        "D3",
-        "F2",
-        "F3",
-        "H2",
-        "H3",
-        "D6",
-        "D7",
-        "F6",
-        "F7",
-        "H6",
-        "H7",
-      ],
-      students: 10,
-      positions: [],
+      fixedPositions: [],
+      positions: []
     };
     this.generateMap = this.generateMap.bind(this);
   }
+
   componentDidMount = () => {
-    this.generateMap();
+
+    this.geneticProcess();
+
   };
 
-  getRandomInt = (max) => {
-    return Math.floor(Math.random() * max);
+  getRandomInt = async (max) => {
+    return await Math.floor(Math.random() * max);
   };
 
-  getRandomString = (num) => {
-    let ramdonInt = this.getRandomInt(num);
+  getRandomString = async (num) => {
+    let ramdonInt = await this.getRandomInt(num);
     return LETTERS[ramdonInt];
   };
 
-  generateRamdonPosition = () => {
-    let letter = this.getRandomString(this.state.area[0]);
-    let number = this.getRandomInt(this.state.area[1]) + 1;
+  generateRamdonPosition = async () => {
+    const { area } = this.props;
+    let letter = await this.getRandomString(area[0]);
+    let number = await this.getRandomInt(area[1]) + 1;
     return letter + number;
   };
 
-  generateMap = () => {
+  validatePosition = async (position) => {
+    const { target } = this.props;
+    return await target.includes(position)
+  }
 
-      let positions = this.state.positions;
-      for (let index = 1; index <= this.state.students; index++) {
-        let ramdonArea = this.generateRamdonPosition();
-        let position = {
+  generateMap = async (randomStudents) => {
+    let positions = [];
+    for (let index = 1; index <= randomStudents.length; index++) {
+      let position;
+      if (randomStudents[index - 1]) {
+        position = randomStudents[index - 1];
+      } else {
+        let ramdonArea = await this.generateRamdonPosition();
+        position = {
           id: index,
-          position: ramdonArea,
+          position: ramdonArea
         };
-        positions.push(position);
       }
-      setTimeout(() => this.setState({ positions }), 30000);
-
+      positions.push(position);
+    }
+    return positions
   };
 
+  deleteWrongPositions = async (randomStudents) => {
+    let positions = [];
+    for (let index = 1; index <= randomStudents.length; index++) {
+      let valPosition = await this.validatePosition(randomStudents[index - 1]['position']);
+      let position;
+      if (!valPosition) {
+        position = null;
+      } else {
+        position = randomStudents[index - 1];
+      }
+      positions.push(position);
+    }
+    return positions
+  };
+
+  geneticProcess = async () => {
+
+    const { positions } = this.state;
+    let generatePositions = positions.length === 0 ? new Array(30) : cleanPositions;
+    let randomPositions;
+    let cleanPositions;
+    let condition = 0;
+    do {
+      condition++;
+      console.log(condition);
+      randomPositions = await this.generateMap(generatePositions);
+      console.log(randomPositions);
+      cleanPositions = await this.deleteWrongPositions(randomPositions);
+      console.log(cleanPositions);
+      this.setState({ positions: randomPositions, fixedPositions: cleanPositions });
+    } while (condition <= 50);
+
+  }
+
   render() {
-    let limiteX = new Array(this.state.area[0]);
-    let limiteY = new Array(this.state.area[1]);
-    let ArrayStudents = new Array(this.state.students);
+
+    const { students, area, target } = this.props;
+
+    let limiteX = new Array(area[0]);
+    let limiteY = new Array(area[1]);
+    let ArrayStudents = new Array(students);
 
     return (
       <div>
         {limiteX.fill().map((x, ixndex) => {
           return (
-            <div className="map-row">
+            <div className="map-row" key={ixndex}>
               {limiteY.fill().map((y, indexy) => {
-                const isPlace = this.state.place.includes(
+                const isPlace = target.includes(
                   LETTERS[ixndex] + (indexy + 1)
                 )
                   ? "place"
@@ -85,6 +119,7 @@ export default class map extends Component {
                     <div
                       id={LETTERS[ixndex] + (indexy + 1)}
                       className={"map-item " + isPlace}
+                      key={indexy}
                     >
                       <p>
                         {LETTERS[ixndex]}
@@ -98,6 +133,7 @@ export default class map extends Component {
                     <div
                       id={LETTERS[ixndex] + (indexy + 1)}
                       className={"map-item " + isPlace}
+                      key={indexy}
                     >
                       <p>
                         {LETTERS[ixndex]}
@@ -112,7 +148,7 @@ export default class map extends Component {
         })}
         <div className="map-hallway">
           {ArrayStudents.fill().map((student, nameStudent) => {
-            return <div className="map-student">{nameStudent + 1}</div>;
+            return <div className="map-student" key={nameStudent}>{nameStudent + 1}</div>;
           })}
         </div>
       </div>
